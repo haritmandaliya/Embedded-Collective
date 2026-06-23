@@ -1,3 +1,7 @@
+import asyncio
+import logging
+import os
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -5,26 +9,36 @@ from sqlalchemy.future import select
 from sqlalchemy import func
 from sqlalchemy.orm import selectinload
 
+# Configure production logging system
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(name)s] %(levelname)-5s: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger("app.main")
+
 from app.core.config import settings
 from app.api.api import api_router
 from app.db.session import get_db
 from app.models.all_models import User, Question, Answer, FeaturedSolution, Review, Tag, question_tag, QuestionView
-
-from contextlib import asynccontextmanager
 from app.db.seed import seed as run_db_seed
-import os
 
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+async def run_db_seed_safe():
+    try:
+        logger.info("--- BACKGROUND SEEDING: Starting database checks and seeding ---")
+        await run_db_seed()
+        logger.info("--- BACKGROUND SEEDING: Seeding database complete ---")
+    except Exception as e:
+        logger.error("--- BACKGROUND SEEDING ERROR: Seeding database failed: %s ---", e)
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    try:
-        print("--- STARTUP: Ensuring tables exist and seeding ---")
-        await run_db_seed()
-        print("--- STARTUP: Seeding complete ---")
-    except Exception as e:
-        print(f"--- STARTUP ERROR: Seeding failed: {e} ---")
+    # Run database seed tasks asynchronously in the background to unblock fast port binding and pass health check
+    logger.info("--- STARTUP: Scheduling background database seed task ---")
+    asyncio.create_task(run_db_seed_safe())
     yield
 
 app = FastAPI(
@@ -34,9 +48,19 @@ app = FastAPI(
 )
 
 # Configure CORS for local development & production access
+allowed_origins = [
+    "https://haritmandaliya.vercel.app",
+    "https://haritmandaliya-portfolio.vercel.app",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+env_origins = os.getenv("ALLOWED_ORIGINS")
+if env_origins:
+    allowed_origins.extend([o.strip() for o in env_origins.split(",") if o.strip()])
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allow all origins, can be locked down as needed
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -141,8 +165,10 @@ async def get_featured_solutions(db: AsyncSession = Depends(get_db)):
     return solutions_list
 
 @app.get("/")
-async def root():
-    return {"status": "healthy", "service": settings.PROJECT_NAME}
+@app.get("/health")
+@app.get(f"{settings.API_V1_STR}/health")
+async def health_check():
+    return {"status": "ok"}
 
 from app.api.deps import get_current_user
 from app.schemas.all_schemas import UserOut

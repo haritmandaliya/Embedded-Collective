@@ -26,7 +26,34 @@ from app.db.seed import seed as run_db_seed
 UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "uploads")
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-async def run_db_seed_safe():
+async def run_startup_diagnostics():
+    port = os.getenv("PORT", "8000")
+    env = settings.ENVIRONMENT
+    logger.info("=== STARTUP DIAGNOSTICS ===")
+    logger.info("PORT: %s", port)
+    logger.info("ENVIRONMENT: %s", env)
+    
+    # 1. Test database connection
+    try:
+        from app.db.session import engine
+        from sqlalchemy import text
+        async with engine.connect() as conn:
+            await conn.execute(text("SELECT 1"))
+        logger.info("DATABASE STATUS: Connected successfully to Supabase PostgreSQL!")
+    except Exception as e:
+        logger.error("DATABASE STATUS: Failed to connect to database: %s", e)
+        
+    # 2. Test Redis connection
+    try:
+        from app.core.redis import redis_client
+        await redis_client.ping()
+        logger.info("REDIS STATUS: Connected successfully to Upstash Redis!")
+    except Exception as e:
+        logger.error("REDIS STATUS: Failed to connect to Redis: %s", e)
+    logger.info("============================")
+
+async def run_background_initialization():
+    await run_startup_diagnostics()
     try:
         logger.info("--- BACKGROUND SEEDING: Starting database checks and seeding ---")
         await run_db_seed()
@@ -36,9 +63,9 @@ async def run_db_seed_safe():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Run database seed tasks asynchronously in the background to unblock fast port binding and pass health check
-    logger.info("--- STARTUP: Scheduling background database seed task ---")
-    asyncio.create_task(run_db_seed_safe())
+    # Run diagnostics & database seed tasks asynchronously in the background to unblock fast port binding
+    logger.info("--- STARTUP: Scheduling background initialization and seed task ---")
+    asyncio.create_task(run_background_initialization())
     yield
 
 app = FastAPI(

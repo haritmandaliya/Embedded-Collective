@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import Optional
+from pydantic import model_validator
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=True, extra="ignore")
@@ -7,11 +8,11 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Embedded Collective API"
     API_V1_STR: str = "/api/v1"
     
-    # Database settings — use SQLite locally when Postgres is unavailable
-    DATABASE_URL: str = "sqlite+aiosqlite:////home/harit/Harit_Portfolio/apps/backend/collective.db"
+    # Database settings — environment variable required in production, relative fallback in dev
+    DATABASE_URL: Optional[str] = None
     
-    # Redis settings
-    REDIS_URL: str = "redis://localhost:6379/0"
+    # Redis settings — environment variable required in production, relative fallback in dev
+    REDIS_URL: Optional[str] = None
     
     # Security
     SECRET_KEY: str = "supersecretkeychangeinproduction1234567890"
@@ -44,5 +45,22 @@ class Settings(BaseSettings):
 
     # Admin contact email
     ADMIN_EMAIL: Optional[str] = None
+
+    @model_validator(mode="after")
+    def validate_production_env(self) -> "Settings":
+        if self.ENVIRONMENT == "production":
+            if not self.DATABASE_URL:
+                raise ValueError("DATABASE_URL environment variable is required in production environment.")
+            if not self.REDIS_URL:
+                raise ValueError("REDIS_URL environment variable is required in production environment.")
+            if not self.SECRET_KEY or self.SECRET_KEY == "supersecretkeychangeinproduction1234567890":
+                raise ValueError("SECRET_KEY must be a secure random value in production.")
+        else:
+            # Safe defaults for local development
+            if not self.DATABASE_URL:
+                self.DATABASE_URL = "sqlite+aiosqlite:///collective.db"
+            if not self.REDIS_URL:
+                self.REDIS_URL = "redis://localhost:6379/0"
+        return self
 
 settings = Settings()

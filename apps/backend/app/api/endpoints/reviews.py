@@ -12,13 +12,38 @@ router = APIRouter()
 from app.api.deps import get_current_user
 from app.models.all_models import User
 
+@router.get("/mine", response_model=ReviewOut)
+async def get_my_review(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    review = await db.scalar(
+        select(Review).where(Review.user_id == current_user.id)
+    )
+    if not review:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Review not found"
+        )
+    return review
+
 @router.post("/", response_model=ReviewOut, status_code=status.HTTP_201_CREATED)
 async def create_review(
     rev_in: ReviewCreate,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-    # Review starts as visible = False until approved by admin (display only admins wants)
+    # Check if this user has already submitted a review
+    existing_review = await db.scalar(
+        select(Review).where(Review.user_id == current_user.id)
+    )
+    if existing_review:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You have already submitted a review. Only one review per user is permitted."
+        )
+
+    # Review starts as visible = False until approved by admin
     review = Review(
         author_name=rev_in.author_name,
         role_or_title=rev_in.role_or_title,

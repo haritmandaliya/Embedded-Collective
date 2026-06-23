@@ -157,10 +157,7 @@ export function Navbar() {
 
   const isCommunity = location.pathname.startsWith('/community')
 
-  const textNavColor =
-    isCommunity
-      ? 'var(--text-primary)'
-      : (theme === 'dark' || !scrolled ? '#f0f0ff' : 'var(--text-primary)')
+  const textNavColor = theme === 'dark' ? '#f0f0ff' : '#000000'
 
   return (
     <>

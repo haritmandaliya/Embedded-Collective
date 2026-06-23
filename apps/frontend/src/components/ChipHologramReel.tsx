@@ -128,7 +128,7 @@ export function ChipHologramReel() {
   return (
     <div
       ref={containerRef}
-      className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-16 p-6 glass-card rounded-xl border border-red-core/10 relative overflow-hidden"
+      className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center mb-16 p-6 rounded-xl border border-white/10 bg-[#111118]/95 shadow-[0_4px_32px_rgba(0,0,0,0.6)] text-white relative overflow-hidden"
     >
       {/* Background Matrix/Grid Overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(192,25,44,0.02)_1px,transparent_1px),linear-gradient(to_bottom,rgba(192,25,44,0.02)_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
@@ -155,7 +155,7 @@ export function ChipHologramReel() {
           )}
         </div>
         
-        <div className="flex items-center gap-2 mt-3 font-mono text-[10px] text-text-secondary">
+        <div className="flex items-center gap-2 mt-3 font-mono text-[10px] text-slate-400">
           <Cpu size={12} className="text-red-core animate-spin" style={{ animationDuration: '4s' }} />
           LPC2129_CORE_HOLOGRAM.reel [24FPS]
         </div>
@@ -163,10 +163,10 @@ export function ChipHologramReel() {
 
       {/* Right: Description & Pills */}
       <div className="lg:col-span-5 flex flex-col justify-center">
-        <h4 className="font-heading font-bold text-lg uppercase tracking-wider mb-2 text-text-primary">
+        <h4 className="font-heading font-bold text-lg uppercase tracking-wider mb-2 text-white">
           Hardware Prototyping
         </h4>
-        <p className="font-body font-bold text-sm text-text-secondary leading-[1.8] mb-6">
+        <p className="font-body font-bold text-sm text-slate-400 leading-[1.8] mb-6">
           Physical computing and embedded design cycles. Interact with the system registers below to inspect specific implementation schematics in the projects ledger.
         </p>
 
@@ -177,16 +177,16 @@ export function ChipHologramReel() {
               <button
                 key={proj.id}
                 onClick={() => scrollToProject(proj.id)}
-                className="w-full text-left flex items-start gap-4 p-4 rounded bg-white/[0.02] border border-red-core/20 hover:border-cyan-spark/50 hover:bg-cyan-spark/5 transition-all duration-300 group hover:shadow-[0_0_15px_rgba(0,245,255,0.1)]"
+                className="w-full text-left flex items-start gap-4 p-4 rounded bg-white/[0.02] border border-white/10 hover:border-cyan-spark/50 hover:bg-cyan-spark/5 transition-all duration-300 group hover:shadow-[0_0_15px_rgba(0,245,255,0.1)]"
               >
                 <div className="p-2 rounded bg-black/40 border border-red-core/30 group-hover:border-cyan-spark/50 text-red-core group-hover:text-cyan-spark transition-colors mt-0.5">
                   <Icon size={18} />
                 </div>
                 <div>
-                  <h5 className="font-heading font-bold text-sm uppercase text-text-primary group-hover:text-cyan-spark transition-colors">
+                  <h5 className="font-heading font-bold text-sm uppercase text-white group-hover:text-cyan-spark transition-colors">
                     {proj.title}
                   </h5>
-                  <p className="font-mono text-xs text-text-secondary mt-1 line-clamp-1">
+                  <p className="font-mono text-xs text-slate-400 mt-1 line-clamp-1">
                     {proj.desc}
                   </p>
                 </div>

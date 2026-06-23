@@ -87,19 +87,24 @@ export function CommunityHome() {
   const [fetchError, setFetchError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/stats/public')
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (d) {
-          setStats({
-            members: d.member_count || 12,
-            questions: d.total_questions || 23,
-            solved: d.solved_questions || 8,
-            rating: d.avg_rating || 4.9,
-          })
-        }
-      })
-      .catch(() => {})
+    const fetchPublicStats = () => {
+      fetch('/api/stats/public')
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (d) {
+            setStats({
+              members: d.member_count || 12,
+              questions: d.total_questions || 23,
+              solved: d.solved_questions || 8,
+              rating: d.avg_rating || 4.9,
+            })
+          }
+        })
+        .catch(() => {})
+    }
+
+    fetchPublicStats()
+    const statsInterval = setInterval(fetchPublicStats, 8000)
 
     fetch('/api/v1/users/leaderboard?limit=5')
       .then((r) => (r.ok ? r.json() : []))
@@ -116,6 +121,10 @@ export function CommunityHome() {
         }
       })
       .catch(() => {})
+
+    return () => {
+      clearInterval(statsInterval)
+    }
   }, [])
 
   const fetchProblems = useCallback(

@@ -87,31 +87,26 @@ export function CommunityHome() {
   const [fetchError, setFetchError] = useState<string | null>(null)
 
   useEffect(() => {
-    const fetchPublicStats = () => {
-      fetch('/api/stats/public')
-        .then((r) => (r.ok ? r.json() : null))
-        .then((d) => {
-          if (d) {
-            setStats({
-              members: d.member_count || 12,
-              questions: d.total_questions || 23,
-              solved: d.solved_questions || 8,
-              rating: d.avg_rating || 4.9,
-            })
-          }
-        })
-        .catch(() => {})
-    }
-
-    fetchPublicStats()
-    const statsInterval = setInterval(fetchPublicStats, 8000)
+    fetch('/api/stats/public')
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d) {
+          setStats({
+            members: d.member_count || 12,
+            questions: d.total_questions || 23,
+            solved: d.solved_questions || 8,
+            rating: d.avg_rating || 4.9,
+          })
+        }
+      })
+      .catch(() => { })
 
     fetch('/api/v1/users/leaderboard?limit=5')
       .then((r) => (r.ok ? r.json() : []))
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) setContributors(data)
       })
-      .catch(() => {})
+      .catch(() => { })
 
     fetch('/api/v1/tags/?limit=8')
       .then((r) => (r.ok ? r.json() : []))
@@ -120,11 +115,7 @@ export function CommunityHome() {
           setActiveTags(data.map((t: { name: string; count: number }) => ({ name: t.name, count: t.count })))
         }
       })
-      .catch(() => {})
-
-    return () => {
-      clearInterval(statsInterval)
-    }
+      .catch(() => { })
   }, [])
 
   const fetchProblems = useCallback(
@@ -217,9 +208,8 @@ export function CommunityHome() {
     return (
       <article
         key={q.id}
-        className={`glass-card rounded-xl border border-white/10 hover:border-red-core/30 overflow-hidden transition-all duration-300 shadow-lg hover:shadow-[0_4px_20px_rgba(0,0,0,0.4)] flex flex-col ${
-          q.is_solved ? 'border-green-500/20' : ''
-        }`}
+        className={`glass-card rounded-xl border border-white/10 hover:border-red-core/30 overflow-hidden transition-all duration-300 shadow-lg hover:shadow-[0_4px_20px_rgba(0,0,0,0.4)] flex flex-col ${q.is_solved ? 'border-green-500/20' : ''
+          }`}
         style={{ animationDelay: `${index * 80}ms` }}
       >
         {/* Post Card Header */}

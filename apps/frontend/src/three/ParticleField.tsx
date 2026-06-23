@@ -1,4 +1,4 @@
-import { useRef, useMemo, useState, useEffect } from 'react'
+import { useRef, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
@@ -100,24 +100,9 @@ function Particles() {
 }
 
 export function ParticleField() {
-  const [isMobile, setIsMobile] = useState(false)
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile, { passive: true })
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
-
-  if (isMobile) {
-    return <div className="absolute inset-0 pointer-events-none bg-[#050505]/40" />
-  }
-
   return (
     <div className="absolute inset-0 pointer-events-none opacity-60">
-      <Canvas camera={{ position: [0, 0, 15], fov: 60 }} dpr={[1, 1.5]}>
+      <Canvas camera={{ position: [0, 0, 15], fov: 60 }}>
         <Particles />
       </Canvas>
     </div>

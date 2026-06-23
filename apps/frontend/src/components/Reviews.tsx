@@ -32,7 +32,6 @@ export function Reviews() {
   const [showModal, setShowModal] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [showAllReviews, setShowAllReviews] = useState(false)
-  const [hasReviewed, setHasReviewed] = useState(false)
 
   // Form State
   const [name, setName] = useState('')
@@ -48,29 +47,6 @@ export function Reviews() {
       setName(user.display_name || user.username)
     }
   }, [user])
-
-  // Check if the user has already submitted a review
-  useEffect(() => {
-    const checkMyReview = async () => {
-      if (!token) {
-        setHasReviewed(false)
-        return
-      }
-      try {
-        const res = await fetch('/api/v1/reviews/mine', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        })
-        if (res.ok) {
-          setHasReviewed(true)
-        } else {
-          setHasReviewed(false)
-        }
-      } catch (err) {
-        setHasReviewed(false)
-      }
-    }
-    checkMyReview()
-  }, [user, token])
 
   const fetchReviews = async () => {
     try {
@@ -121,7 +97,6 @@ export function Reviews() {
         setRole('')
         setText('')
         setRating(5)
-        setHasReviewed(true)
         // Refresh reviews list
         await fetchReviews()
         // Dispatch event for other components (e.g. stats counters) to update in realtime
@@ -208,30 +183,20 @@ export function Reviews() {
           </div>
 
           <div className="flex flex-col items-center">
-            {hasReviewed ? (
-              <button
-                disabled
-                className="flex items-center gap-2 font-mono text-xs px-5 py-2.5 bg-gray-500/20 text-gray-400 rounded border border-gray-500/20 cursor-not-allowed transition-all duration-300"
-              >
-                <Check size={14} className="text-green-500" />
-                YOU HAVE SUBMITTED A REVIEW
-              </button>
-            ) : (
-              <button
-                onClick={() => {
-                  if (!user) {
-                    setAuthModalOpen(true, 'signin')
-                  } else {
-                    setSuccessMsg(false)
-                    setShowModal(true)
-                  }
-                }}
-                className="flex items-center gap-2 font-mono text-xs px-5 py-2.5 bg-red-core text-white hover:bg-red-glow rounded border border-red-core hover:border-red-glow shadow-[0_0_15px_rgba(192,25,44,0.3)] transition-all duration-300 transform active:scale-95 animate-pulse-subtle"
-              >
-                <Plus size={14} />
-                {user ? 'WRITE A REVIEW' : 'SIGN IN TO WRITE A REVIEW'}
-              </button>
-            )}
+            <button
+              onClick={() => {
+                if (!user) {
+                  setAuthModalOpen(true, 'signin')
+                } else {
+                  setSuccessMsg(false)
+                  setShowModal(true)
+                }
+              }}
+              className="flex items-center gap-2 font-mono text-xs px-5 py-2.5 bg-red-core text-white hover:bg-red-glow rounded border border-red-core hover:border-red-glow shadow-[0_0_15px_rgba(192,25,44,0.3)] transition-all duration-300 transform active:scale-95 animate-pulse-subtle"
+            >
+              <Plus size={14} />
+              {user ? 'WRITE A REVIEW' : 'SIGN IN TO WRITE A REVIEW'}
+            </button>
             {!user && (
               <span className="font-mono text-[9px] text-text-muted mt-2 block uppercase tracking-wider">
                 Only authenticated members can submit reviews

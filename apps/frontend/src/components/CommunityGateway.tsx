@@ -61,12 +61,8 @@ export function CommunityGateway() {
   useEffect(() => {
     fetchStats()
     window.addEventListener('review-submitted', fetchStats)
-    
-    const interval = setInterval(fetchStats, 8000)
-    
     return () => {
       window.removeEventListener('review-submitted', fetchStats)
-      clearInterval(interval)
     }
   }, [])
 

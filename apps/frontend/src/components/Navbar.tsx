@@ -58,9 +58,8 @@ function PortfolioNavLink({
   onAnchorClick?: (e: React.MouseEvent<HTMLAnchorElement>) => void
 }) {
   const isCyan = link.accent === 'cyan'
-  const className = `font-heading font-bold text-sm uppercase tracking-wide transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] relative group flex items-center gap-1 ${
-    isCyan ? 'text-cyan-spark' : ''
-  }`
+  const className = `font-heading font-bold text-sm uppercase tracking-wide transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] relative group flex items-center gap-1 ${isCyan ? 'text-cyan-spark' : ''
+    }`
 
   const underline = active ? (
     <svg className="absolute -bottom-1 left-0 w-full h-1" viewBox="0 0 100 4">
@@ -105,7 +104,12 @@ export function Navbar() {
   const { user } = useCommunity()
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40)
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40)
+      if (window.scrollY < 300) {
+        setActiveSection('')
+      }
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
 
     let observer: IntersectionObserver | null = null
@@ -157,18 +161,18 @@ export function Navbar() {
 
   const isCommunity = location.pathname.startsWith('/community')
 
-  const textNavColor = theme === 'dark' ? '#f0f0ff' : '#000000'
+  const textNavColor = theme === 'dark' ? '#f0f0ff' : 'var(--text-primary)'
+
 
   return (
     <>
       <nav
-        className={`site-navbar sticky top-0 z-50 h-16 flex items-center px-6 border-b transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          scrolled
+        className={`site-navbar sticky top-0 z-50 h-16 flex items-center px-6 border-b transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${scrolled
             ? (theme === 'dark'
-                ? 'bg-deep/95 backdrop-blur-xl border-red-core/40 shadow-[0_4px_24px_rgba(0,0,0,0.15)]'
-                : 'bg-surface/95 backdrop-blur-xl border-red-core/30 shadow-[0_4px_24px_rgba(0,0,0,0.05)]')
+              ? 'bg-deep/95 backdrop-blur-xl border-red-core/40 shadow-[0_4px_24px_rgba(0,0,0,0.15)]'
+              : 'bg-surface/95 backdrop-blur-xl border-red-core/30 shadow-[0_4px_24px_rgba(0,0,0,0.05)]')
             : 'bg-transparent border-transparent'
-        }`}
+          }`}
         style={{ '--text-nav': textNavColor } as React.CSSProperties}
       >
         <div className="max-w-content mx-auto w-full flex items-center justify-between">

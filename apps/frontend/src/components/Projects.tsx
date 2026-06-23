@@ -4,8 +4,6 @@ import { X } from 'lucide-react'
 import { SectionTitle } from './shared/SectionTitle'
 import { PROJECTS } from '../data/content'
 import { getStaggerVariant, useScrollReveal } from '../hooks/useScrollReveal'
-import { ChipHologramReel } from './ChipHologramReel'
-import { useTheme } from '../context/ThemeContext'
 
 const ParticleField = lazy(() =>
   import('../three/ParticleField').then((m) => ({ default: m.ParticleField }))
@@ -33,7 +31,7 @@ function ProjectCard({
       viewport={{ once: true, amount: 0.2 }}
       variants={getStaggerVariant(index, 3)}
       transition={{ delay: index * 0.1 }}
-      className="group relative rounded-lg overflow-hidden cursor-pointer transition-all duration-500 bg-[#111118]/95 border border-white/10 shadow-[0_4px_32px_rgba(0,0,0,0.6)] text-white"
+      className="group relative glass-card rounded-lg overflow-hidden cursor-pointer transition-all duration-500"
       style={{ transformPerspective: 800 }}
       whileHover={{ y: -12, rotateX: -4, rotateY: 4 }}
       onClick={() => onSelect(project)}
@@ -56,19 +54,19 @@ function ProjectCard({
           }}
         />
         <p className="font-mono text-[10px] text-red-core mb-2">PROJECT_{project.id}</p>
-        <h3 className="font-heading font-bold text-xl mb-3 text-white">{project.title}</h3>
+        <h3 className="font-heading font-bold text-xl mb-3">{project.title}</h3>
         <div className="flex flex-wrap gap-1.5 mb-3">
           {project.tech.map((t) => (
             <span
               key={t}
-              className="font-mono text-[10px] px-2 py-0.5 rounded border border-white/10 text-slate-300 group-hover:border-cyan-spark/50 transition-colors bg-white/5"
+              className="font-mono text-[10px] px-2 py-0.5 rounded border border-red-core/20 group-hover:border-cyan-spark/50 transition-colors"
             >
               {t}
             </span>
           ))}
         </div>
         <p
-          className={`font-body font-bold text-sm text-slate-400 leading-[1.95] ${expanded ? '' : 'line-clamp-2'}`}
+          className={`font-body font-bold text-sm text-text-secondary leading-[1.95] ${expanded ? '' : 'line-clamp-2'}`}
           onClick={(e) => {
             e.stopPropagation()
             setExpanded(!expanded)
@@ -136,15 +134,9 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
 export function Projects() {
   const { ref } = useScrollReveal()
   const [selected, setSelected] = useState<Project | null>(null)
-  const { theme } = useTheme()
 
   return (
-    <section
-      id="projects"
-      className={`relative section-padding min-h-screen transition-colors duration-500 ${
-        theme === 'light' ? 'bg-[#ffffff] text-[#0a0915]' : 'bg-[#050505] text-[#f0f0ff]'
-      }`}
-    >
+    <section id="projects" className="relative section-padding min-h-screen bg-[#050505]">
       <Suspense fallback={null}>
         <ParticleField />
       </Suspense>
@@ -152,7 +144,6 @@ export function Projects() {
       <div ref={ref} className="relative z-10 max-w-content mx-auto">
         <SectionTitle label="portfolio" title="PROJECTS.build" />
 
-        <ChipHologramReel />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {PROJECTS.map((project, i) => (

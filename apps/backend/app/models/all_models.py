@@ -219,6 +219,9 @@ class Review(Base):
 
     user = relationship("User")
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
 class FeaturedSolution(Base):
     id = Column(Integer, primary_key=True, index=True)
     question_id = Column(Integer, ForeignKey("question.id", ondelete="CASCADE"), nullable=False)

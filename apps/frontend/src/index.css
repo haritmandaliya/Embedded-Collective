@@ -479,6 +479,7 @@ body::-webkit-scrollbar {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f0f0ff;
   transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -1155,6 +1156,28 @@ body::-webkit-scrollbar {
 [data-theme='light'] .hero-subtitle {
   color: #f0f0ff !important;
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6) !important;
+}
+
+[data-theme='light'] #hero .hero-chip {
+  background: rgba(0, 0, 0, 0.55) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #f0f0ff !important;
+}
+
+[data-theme='light'] #hero .hero-badge {
+  background: rgba(0, 0, 0, 0.6) !important;
+  color: #ff2040 !important;
+  border-color: rgba(192, 25, 44, 0.5) !important;
+}
+
+[data-theme='light'] #hero .hero-btn-secondary.glass-card {
+  background: rgba(0, 0, 0, 0.55) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+}
+
+[data-theme='light'] #hero .text-text-secondary {
+  color: rgba(240, 240, 255, 0.6) !important;
 }
 
 /* Ensure animation sections are kept dark for canvas/video visibility */

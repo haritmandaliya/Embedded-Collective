@@ -1,0 +1,312 @@
+
+HARIT MANDALIYA - EMBEDDED SYSTEMS DEVELOPER PORTFOLIO CONTENT
+==============================================================
+
+HOME PAGE
+=========
+
+Hero Title:
+Embedded Systems Developer
+
+Fixed Subtitle (As Requested):
+Graduated In Computer Engineering currently pursuing Embedded System Training At Vector India.
+
+Professional Introduction:
+I am an aspiring Embedded Systems Engineer with a strong foundation in Computer Engineering and a growing specialization in Embedded Software and Firmware Development. My passion lies in building reliable, efficient, and intelligent systems that bridge the gap between hardware and software. Through hands-on training, practical projects, and industry exposure, I have developed a deep interest in microcontroller programming, firmware architecture, communication protocols, and real-world embedded applications.
+
+Currently, I am pursuing advanced Embedded Systems training at Vector India, Bengaluru, where I am gaining practical experience in Embedded C, ARM7 Microcontrollers, Linux System Programming, and industry-standard communication protocols. My goal is to contribute to innovative products in Embedded Systems, Automotive Electronics, Industrial Automation, and IoT domains.
+
+Hero Buttons:
+- View Projects
+- Download Resume
+- Contact Me
+
+Quick Highlights:
+- Embedded Systems Enthusiast
+- Firmware Development Learner
+- ARM7 (LPC2129) Developer
+- Linux System Programming
+- Communication Protocols Specialist
+- Problem Solver & Continuous Learner
+
+
+ABOUT ME PAGE
+=============
+
+Title:
+About Me
+
+Content:
+Hello, I am Harit Mandaliya, a Computer Engineering graduate passionate about Embedded Systems, Firmware Development, and low-level software engineering.
+
+My journey into technology began with software development and gradually evolved toward embedded engineering, where I discovered my interest in understanding how hardware and software interact to create intelligent systems. This interest motivated me to pursue specialized Embedded Systems training and gain practical exposure to firmware development, microcontrollers, communication protocols, and Linux-based development environments.
+
+Throughout my academic and professional journey, I have worked on projects ranging from software applications to embedded hardware solutions. These experiences have helped me build strong analytical thinking, debugging skills, and a structured engineering mindset.
+
+I enjoy exploring how electronic systems communicate, process data, and interact with the physical world. Whether it is interfacing sensors, implementing communication protocols, developing firmware logic, or debugging embedded applications, I am motivated by solving technical challenges and creating reliable solutions.
+
+My long-term objective is to establish myself as a Firmware and Embedded Software Engineer contributing to cutting-edge products in Automotive, Industrial Automation, Consumer Electronics, and IoT sectors.
+
+Personal Information:
+Name: Harit Mandaliya
+Degree: Bachelor of Engineering in Computer Engineering
+Current Training: Embedded Systems Training at Vector India
+Location: Bengaluru, India
+Career Focus: Embedded Systems and Firmware Development
+
+Professional Strengths:
+- Strong Programming Fundamentals
+- Logical Problem Solving
+- Firmware Development Mindset
+- Hardware-Software Integration
+- Continuous Learning Attitude
+- Debugging and Troubleshooting Skills
+
+
+SKILLS PAGE
+===========
+
+Title:
+Technical Skills
+
+Programming Languages:
+- C Programming
+- Embedded C
+- C++
+- Python
+
+Embedded Systems:
+- Firmware Development
+- Microcontroller Programming
+- ARM7 LPC2129
+- Embedded Software Design
+- Peripheral Interfacing
+- Interrupt Handling
+- Timers and Counters
+- ADC Concepts
+
+Communication Protocols:
+- UART
+- SPI
+- I2C
+- CAN
+
+Operating Systems:
+- Linux
+- Linux System Programming
+
+Development Tools:
+- Git
+- GCC
+- VS Code
+- Linux Command Line
+
+Software Technologies:
+- React
+- REST APIs
+- ERPNext
+- Frappe Framework
+
+Core Concepts:
+- Data Structures
+- Memory Management
+- Pointers
+- File Handling
+- Process Management
+- Multithreading Basics
+- Debugging Techniques
+
+
+EXPERIENCE PAGE
+===============
+
+Title:
+Professional Experience
+
+Service Further
+Software Engineering Intern
+
+Duration:
+2025
+
+Description:
+Worked as a Software Engineering Intern contributing to web application development and business software solutions. Gained hands-on exposure to modern software development practices, API integration, frontend development, backend customization, and collaborative development workflows.
+
+Key Responsibilities:
+- Developed application features using React and Python.
+- Worked with ERPNext and Frappe Framework.
+- Integrated REST APIs.
+- Participated in debugging and testing activities.
+- Utilized Git for version control and collaboration.
+- Assisted in improving application functionality and user experience.
+
+Achievements:
+- Strengthened software engineering fundamentals.
+- Improved understanding of scalable application development.
+- Learned professional development workflows and code management practices.
+
+
+TRAINING PAGE
+=============
+
+Title:
+Embedded Systems Training
+
+Institute:
+Vector India, Bengaluru
+
+Status:
+Currently Pursuing
+
+Overview:
+Currently undergoing intensive industry-oriented Embedded Systems training focused on firmware development, microcontroller programming, embedded software design, and Linux System Programming.
+
+Training Modules:
+- Embedded C Programming
+- ARM7 LPC2129 Microcontroller
+- Data Structures
+- Linux System Programming
+- UART Communication
+- SPI Communication
+- I2C Communication
+- CAN Communication
+- Interrupts
+- Timers
+- ADC
+- Firmware Development Concepts
+
+Learning Outcomes:
+- Writing efficient embedded software.
+- Understanding hardware-software interaction.
+- Implementing communication protocols.
+- Developing firmware for real-time applications.
+- Debugging embedded systems effectively.
+
+
+PROJECTS PAGE
+=============
+
+Project 1:
+RFID Based Attendance Management System
+
+Description:
+Designed and developed an RFID-based attendance management system using ARM7 LPC2129. The system automates attendance recording through RFID authentication and reduces manual record management.
+
+Technologies:
+Embedded C, LPC2129, RFID, UART
+
+Key Features:
+- RFID-based identification.
+- Automated attendance tracking.
+- Fast authentication process.
+- Improved record accuracy.
+
+Project 2:
+TemporalForge MIDI Drum System
+
+Description:
+Developed an embedded MIDI drum system capable of generating musical outputs based on user interactions. Focused on firmware logic, signal processing, and hardware-software integration.
+
+Technologies:
+Embedded C, ARM7, UART
+
+Key Features:
+- Real-time input processing.
+- MIDI signal generation.
+- Embedded audio control concepts.
+
+Project 3:
+Home Automation System
+
+Description:
+Developed a smart home automation system capable of controlling appliances through wireless communication and embedded control logic.
+
+Technologies:
+Arduino, Embedded C, Bluetooth, LCD
+
+Key Features:
+- Appliance control.
+- Wireless communication.
+- Real-time status display.
+- User-friendly operation.
+
+Project 4:
+Student Management System
+
+Description:
+Developed a menu-driven application for managing student records using core C programming concepts and file handling techniques.
+
+Technologies:
+C Programming, Data Structures
+
+Key Features:
+- Student record management.
+- Dynamic memory allocation.
+- File storage.
+- Search and update operations.
+
+Project 5:
+Custom Linux CP Command
+
+Description:
+Implemented a custom version of the Linux CP command using low-level file handling and system programming concepts.
+
+Technologies:
+C Programming, Linux
+
+Key Features:
+- File copy functionality.
+- Command-line argument processing.
+- Linux system programming concepts.
+
+Project 6:
+ERPNext Business Application Development
+
+Description:
+Contributed to ERPNext-based application development during internship activities involving backend customization and workflow implementation.
+
+Technologies:
+Python, ERPNext, Frappe, React
+
+Key Features:
+- Business workflow customization.
+- API integration.
+- User interface enhancements.
+
+
+ACHIEVEMENTS PAGE
+=================
+
+- Successfully completed Computer Engineering degree.
+- Pursuing professional Embedded Systems training at Vector India.
+- Developed multiple software and embedded engineering projects.
+- Gained industry experience through Software Engineering Internship.
+- Continuously building expertise in Firmware and Embedded Software Development.
+
+
+CAREER OBJECTIVE PAGE
+=====================
+
+My objective is to build a successful career in Embedded Systems and Firmware Engineering by applying my technical knowledge, problem-solving abilities, and passion for low-level software development. I aim to contribute to innovative products that create real-world impact while continuously learning emerging technologies in Embedded Systems, Automotive Electronics, Industrial Automation, and IoT domains.
+
+
+CONTACT PAGE
+============
+
+Title:
+Let's Connect
+
+Description:
+I am actively seeking opportunities in Embedded Systems, Firmware Development, Embedded Linux, Automotive Electronics, and IoT Engineering. If you are looking for a motivated engineer passionate about embedded technology and continuous learning, I would be glad to connect and discuss potential opportunities.
+
+Email:
+haritmandaliya@gmail.com
+
+LinkedIn:
+(Add Your LinkedIn URL)
+
+GitHub:
+(Add Your GitHub URL)
+
+Location:
+Bengaluru, India

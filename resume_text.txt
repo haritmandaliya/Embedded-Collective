@@ -1,0 +1,88 @@
+Harit Mandaliya
+B haritmandaliya@gmail.com | T +91-7600107607 | ï linkedin.com/in/harit-mandaliya
+HackerRank: hackerrank.com/profile/haritmandaliya | LeetCode: leetcode.com/u/harit mandaliya
+
+Professional Summary
+Computer Engineering graduate with hands-on experience in Embedded C, C++, ARM7 (LPC2129), microcontroller programming, and
+communication protocols (UART, SPI, I2C, CAN). Currently training in Embedded Systems at Vector India, with project experience
+in RFID attendance systems, real-time MIDI signal processing, and IoT home automation. Internship background in React, Frappe
+Framework, Python, and REST APIs. Strong debugging and problem-solving skills with a focus on Embedded Software and Firmware
+Development.
+
+Education
+Gyanmanjari Institute of Technology (GMIT), Bhavnagar, Gujarat
+Bachelor of Engineering (Computer Engineering)
+Sir Bhavsinhji Polytechnic Institute, Bhavnagar, Gujarat
+Diploma in Information Technology
+
+Sept 2022 – Jul 2025
+CGPA: 7.44
+Aug 2019 – Jun 2022
+CGPA: 7.39
+
+Professional Training
+Embedded Systems Training (Pursuing)
+Sept 2025 – Present
+Vector India, Bengaluru
+• Course Topics: C, C++, Embedded C, ARM7 (LPC2129), Data Structures, Linux System Call Programming, Communication
+Protocols (UART, SPI, I2C, CAN 2.0), Device Interfacing, Keil µVision, Linux Basics.
+• Built and debugged 10+ embedded C/C++ programs on ARM7 (LPC2129) hardware using Keil µVision, covering interrupts,
+memory-mapped I/O, and peripheral interfacing.
+• Practiced Linux system call programming and data structure implementation to strengthen low-level firmware development and
+debugging skills.
+
+Experience
+Software Engineering Intern
+Service-Further
+• Worked on enterprise applications using Frappe Framework, React, Vite, and Python.
+• Developed backend functionality, REST API integrations, and reusable frontend components.
+• Collaborated with development teams using Git and agile practices to enhance application workflows.
+
+Jan 2025 – Dec 2025
+Remote
+
+Skills
+Programming Languages: C, C++, Embedded C, Python, Microcontrollers & Microprocessors: LPC2129 (ARM7),
+HTML, CSS
+Arduino UNO
+Operating Systems: Linux, RTOS Concepts (Fundamentals)
+Protocols: UART, SPI, I2C, CAN 2.0
+Peripheral Interfaces: ADC, GPIO, DS1307 RTC, LCD16x2
+
+System Programming: Linux System Call Programming
+
+Development Tools: Keil µVision, Arduino IDE, Git, VS Code
+
+Web Technologies: React, Vite, Frappe Framework, REST APIs
+
+Projects
+Smart RFID Employee Attendance System [Embedded]
+LPC2129, RFID, DS1307 RTC, LCD16x2, UART
+• Developed an RFID-based attendance and access management system with real-time date/time logging.
+• Integrated RFID module, RTC, and LCD display for accurate attendance tracking.
+TemporalForge – MIDI Drum System [Embedded]
+LPC2129, Embedded C, UART, ADC
+• Designed a real-time MIDI drum system using LPC2129 ARM7; implemented ADC signal processing and UART-based MIDI
+communication with dynamic velocity response.
+Student Management System [Systems]
+C, Singly Linked List
+• Menu-driven application using Singly Linked List for dynamic record management — insert, delete, search, and update operations.
+E-book Bargaining & Sell [Degree Project]
+PHP, JavaScript, HTML, CSS, Bootstrap, MySQL
+• Designed a library management website for cataloging, user management, and streamlined lending processes with intuitive admin and
+patron workflows.
+Home Automation [Diploma Project]
+Arduino UNO R3, HC-05 Bluetooth, 4-Ch 5V Relay
+• Built an IoT-based smart home system integrating sensors, Bluetooth module, and relay control for remote and automated operation.
+AI-Powered Resume Analyzer [Personal Project]
+React, Vite, TypeScript, Groq AI API, PDF.js
+• Built an AI-assisted resume analysis tool with PDF parsing and job-description matching with compatibility scoring.
+Service-Further Website [Internship Project]
+React, Vite, TypeScript, Frappe Framework, MariaDB
+• Developed a responsive service-based web platform integrating backend APIs, authentication, and production-ready frontend modules.
+
+Achievements
+Tabla Visharad – Akhil Bharatiya Gandharva Mahavidyalaya Mandal | First Class with Distinction | 2nd rank, district-level
+Tabla competition | Multiple cultural performances & events
+
+

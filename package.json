@@ -1,0 +1,15 @@
+{
+  "name": "harit-portfolio-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "./run.sh start",
+    "stop": "./run.sh stop",
+    "restart": "./run.sh restart",
+    "test": "./scripts/test_full.sh",
+    "test:api": "./scripts/test_community_api.sh",
+    "build": "npm run build --prefix apps/frontend"
+  }
+}

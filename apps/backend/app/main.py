@@ -2,7 +2,7 @@ import asyncio
 import logging
 import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -294,9 +294,10 @@ async def delete_own_account(
 
 # ──── Share Link Generator ────
 @app.get(f"{settings.API_V1_STR}/questions/{{slug}}/share")
-async def get_question_share_data(slug: str, db: AsyncSession = Depends(get_db)):
+async def get_question_share_data(slug: str, request: Request, db: AsyncSession = Depends(get_db)):
     """Generate sharable link and OG metadata for a question."""
     from fastapi import HTTPException as HTTPErr
+    from urllib.parse import urlparse
 
     result = await db.execute(
         select(Question)
@@ -307,7 +308,12 @@ async def get_question_share_data(slug: str, db: AsyncSession = Depends(get_db))
     if not q:
         raise HTTPErr(status_code=404, detail="Question not found")
 
-    base_url = os.environ.get("PUBLIC_URL", "http://localhost:5173")
+    referer = request.headers.get("referer")
+    if referer:
+        parsed = urlparse(referer)
+        base_url = f"{parsed.scheme}://{parsed.netloc}"
+    else:
+        base_url = os.environ.get("PUBLIC_URL", "http://localhost:5173")
     share_url = f"{base_url}/community/q/{q.slug}"
     tags_str = ", ".join([f"#{t.name}" for t in q.tags[:4]]) if q.tags else "#embedded"
     author_name = q.author.display_name or q.author.username if q.author else "Anonymous"

@@ -175,7 +175,11 @@ async def get_question(
         
     # Increment views (one user = one view for particular post)
     if inc_views:
-        ip_addr = request.client.host if request.client else "unknown"
+        xff = request.headers.get("x-forwarded-for")
+        if xff:
+            ip_addr = xff.split(",")[0].strip()
+        else:
+            ip_addr = request.client.host if request.client else "unknown"
         
         # Check query for existing view record
         view_check = select(QuestionView).where(QuestionView.question_id == question.id)

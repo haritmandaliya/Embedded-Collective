@@ -192,7 +192,7 @@ export function CommunityNav() {
                     initial={{ opacity: 0, y: 8, scale: 0.96 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                    className="absolute right-0 top-full mt-2 w-52 glass-card border border-[var(--border-normal)] rounded-lg py-2 shadow-xl z-50"
+                    className="absolute right-0 top-full mt-2 w-52 community-dropdown-menu rounded-lg py-2 shadow-xl"
                   >
                     <div className="px-3 py-2 border-b border-[var(--border-subtle)] mb-1">
                       <p className="font-mono text-xs text-text-primary truncate">{user.display_name || user.username}</p>

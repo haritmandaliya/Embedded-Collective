@@ -76,22 +76,26 @@ const BOTTOM_CARDS = [
   },
 ] as const
 
-function colorClass(kind: string) {
+function colorClass(kind: string, text?: string) {
+  const trimmed = text ? text.trim() : '';
+  if (trimmed === 'Made_in_India' || trimmed === 'Make_in_India') {
+    return 'text-white'
+  }
   switch (kind) {
     case 'keyword':
       return 'text-cyan-spark'
     case 'type':
       return 'text-red-glow'
     case 'field':
-      return 'text-text-primary'
+      return 'text-gray-100'
     case 'op':
-      return 'text-text-secondary'
+      return 'text-yellow-400'
     case 'string':
       return 'text-green-400'
     case 'arrow':
       return 'text-cyan-spark pulse-glow-arrow'
     default:
-      return 'text-text-primary'
+      return 'text-gray-100'
   }
 }
 
@@ -124,7 +128,7 @@ function PhilosophyTypewriter({ active }: { active: boolean }) {
   let charIndex = 0
 
   return (
-    <pre className="font-mono text-sm leading-relaxed whitespace-pre-wrap">
+    <pre className="font-mono text-sm leading-relaxed whitespace-pre-wrap text-gray-100">
       {PHILOSOPHY_LINES.map((line, li) => (
         <div key={li}>
           {line.parts.map((part, pi) => {
@@ -135,7 +139,7 @@ function PhilosophyTypewriter({ active }: { active: boolean }) {
             return (
               <span
                 key={pi}
-                className={`${colorClass(part.c)} ${'pulseArrow' in line && line.pulseArrow && part.c === 'arrow' && done ? 'pulse-glow-arrow' : ''}`}
+                className={`${colorClass(part.c, part.t)} ${'pulseArrow' in line && line.pulseArrow && part.c === 'arrow' && done ? 'pulse-glow-arrow' : ''}`}
               >
                 {visible}
               </span>
@@ -155,12 +159,19 @@ function PhilosophyTypewriter({ active }: { active: boolean }) {
 
 function TerminalCard({ lines }: { lines: readonly string[] }) {
   return (
-    <pre className="font-mono text-sm leading-relaxed text-text-secondary">
+    <pre className="font-mono text-sm leading-relaxed text-gray-400">
       {lines.map((line, i) => (
         <div key={i}>
           {line.split(/(".*?")/).map((chunk, j) =>
             chunk.startsWith('"') ? (
-              <span key={j} className="text-green-400">
+              <span
+                key={j}
+                className={
+                  (chunk === '"India"' || chunk === '"Made in India"')
+                    ? 'text-white'
+                    : 'text-green-400'
+                }
+              >
                 {chunk}
               </span>
             ) : (
@@ -168,7 +179,7 @@ function TerminalCard({ lines }: { lines: readonly string[] }) {
                 {chunk.split(/(struct|{|}|;|=)/).map((seg, k) => {
                   if (seg === 'struct') return <span key={k} className="text-cyan-spark">{seg}</span>
                   if (['{', '}', ';', '='].includes(seg))
-                    return <span key={k} className="text-text-secondary">{seg}</span>
+                    return <span key={k} className="text-yellow-400">{seg}</span>
                   return <span key={k}>{seg}</span>
                 })}
               </span>

@@ -17,11 +17,6 @@ from app.schemas.all_schemas import UserOut
 
 router = APIRouter()
 
-UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "uploads")
-os.makedirs(UPLOAD_DIR, exist_ok=True)
-os.makedirs(os.path.join(UPLOAD_DIR, "avatars"), exist_ok=True)
-os.makedirs(os.path.join(UPLOAD_DIR, "resumes"), exist_ok=True)
-
 
 class UserUpdate(BaseModel):
     display_name: Optional[str] = None
@@ -277,6 +272,8 @@ async def get_user_profile(username_or_id: str, db: AsyncSession = Depends(get_d
         "questions_count": q_count or 0,
         "answers_count": a_count or 0,
         "accepted_count": accepted or 0,
+        "github_url": user.github_url,
+        "linkedin_url": user.linkedin_url,
     }
 
     if user.role in ("contributor", "admin"):

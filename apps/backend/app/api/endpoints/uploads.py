@@ -2,62 +2,23 @@ import os
 import uuid
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
-from fastapi.responses import FileResponse
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi.responses import RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
 from app.api.deps import get_current_user
-from app.core.config import settings
 from app.models.all_models import Attachment, User
 from app.schemas.all_schemas import AttachmentOut
+from app.services.storage_service import storage_service
 
 router = APIRouter()
-
-UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "uploads")
-STATIC_DIR = os.path.join(UPLOAD_DIR, "static")
-os.makedirs(UPLOAD_DIR, exist_ok=True)
-os.makedirs(STATIC_DIR, exist_ok=True)
 
 ALLOWED_MIME_TYPES = [
     "image/jpeg", "image/png", "image/gif", "image/webp",
     "application/pdf", "application/zip", "text/plain", "application/x-zip-compressed",
 ]
 MAX_FILE_SIZE = 10 * 1024 * 1024
-
-
-def resolve_upload_path(filename: str) -> str | None:
-    """Find file in static dir or legacy flat upload dir."""
-    safe = os.path.basename(filename)
-    for directory in (STATIC_DIR, UPLOAD_DIR):
-        path = os.path.join(directory, safe)
-        if os.path.isfile(path):
-            return path
-    return None
-
-
-def public_file_url(filename: str) -> str:
-    return f"/api/v1/uploads/static/{os.path.basename(filename)}"
-
-
-async def upload_to_r2(content: bytes, filename: str, mime_type: str) -> str:
-    import aioboto3
-
-    session = aioboto3.Session()
-    endpoint_url = f"https://{settings.R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
-    async with session.client(
-        "s3",
-        endpoint_url=endpoint_url,
-        aws_access_key_id=settings.R2_ACCESS_KEY_ID,
-        aws_secret_access_key=settings.R2_SECRET_ACCESS_KEY,
-    ) as s3:
-        await s3.put_object(
-            Bucket=settings.R2_BUCKET_NAME,
-            Key=filename,
-            Body=content,
-            ContentType=mime_type,
-        )
-    return f"https://{settings.R2_BUCKET_NAME}.r2.cloudflarestorage.com/{filename}"
 
 
 @router.post("/", response_model=AttachmentOut)
@@ -77,20 +38,14 @@ async def upload_file(
 
     file_ext = os.path.splitext(file.filename or "")[1] or ".bin"
     unique_filename = f"{uuid.uuid4()}{file_ext}"
+    
+    # Store in posts/ folder inside the Supabase Storage bucket
+    bucket_path = f"posts/{unique_filename}"
 
-    if all([settings.R2_BUCKET_NAME, settings.R2_ACCOUNT_ID, settings.R2_ACCESS_KEY_ID, settings.R2_SECRET_ACCESS_KEY]):
-        try:
-            file_url = await upload_to_r2(content, unique_filename, file.content_type)
-        except Exception:
-            local_path = os.path.join(STATIC_DIR, unique_filename)
-            with open(local_path, "wb") as f:
-                f.write(content)
-            file_url = public_file_url(unique_filename)
-    else:
-        local_path = os.path.join(STATIC_DIR, unique_filename)
-        with open(local_path, "wb") as f:
-            f.write(content)
-        file_url = public_file_url(unique_filename)
+    try:
+        file_url = await storage_service.upload_file(content, bucket_path, file.content_type)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to upload file to storage: {str(e)}")
 
     attachment = Attachment(
         file_name=file.filename,
@@ -108,10 +63,9 @@ async def upload_file(
 
 @router.get("/static/{filename}")
 async def get_static_upload(filename: str):
-    path = resolve_upload_path(filename)
-    if not path:
-        raise HTTPException(status_code=404, detail="File not found")
-    return FileResponse(path)
+    """Fallback redirect to Supabase Storage public URL for compatibility."""
+    public_url = storage_service.get_public_url(f"posts/{filename}")
+    return RedirectResponse(url=public_url)
 
 
 @router.post("/avatar")
@@ -128,8 +82,6 @@ async def upload_avatar(
         raise HTTPException(status_code=400, detail="Max 2MB")
 
     filename = f"avatars/{current_user.id}.jpg"
-    path = os.path.join(UPLOAD_DIR, filename)
-    os.makedirs(os.path.dirname(path), exist_ok=True)
 
     try:
         from PIL import Image
@@ -142,10 +94,11 @@ async def upload_avatar(
     except ImportError:
         pass
 
-    with open(path, "wb") as f:
-        f.write(content)
+    try:
+        url = await storage_service.upload_file(content, filename, "image/jpeg")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to upload avatar: {str(e)}")
 
-    url = f"/uploads/avatars/{current_user.id}.jpg"
     current_user.profile_pic_url = url
     current_user.avatar_url = url
     await db.commit()
@@ -167,13 +120,13 @@ async def upload_resume(
     if len(content) > 5 * 1024 * 1024:
         raise HTTPException(status_code=400, detail="Max 5MB")
 
-    rel_path = f"resumes/{current_user.id}.pdf"
-    path = os.path.join(UPLOAD_DIR, rel_path)
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "wb") as f:
-        f.write(content)
+    filename = f"resumes/{current_user.id}.pdf"
 
-    url = f"/uploads/{rel_path}"
+    try:
+        url = await storage_service.upload_file(content, filename, "application/pdf")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to upload resume: {str(e)}")
+
     current_user.resume_url = url
     await db.commit()
     return {"url": url}

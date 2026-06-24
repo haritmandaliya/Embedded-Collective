@@ -70,13 +70,22 @@ export function Achievements() {
           >
             "
           </span>
-          <p className="relative font-body font-bold text-xl md:text-2xl italic text-text-primary max-w-3xl mx-auto leading-[2]">
-            <TerminalText
-              text={CAREER_OBJECTIVE}
-              speed={12}
-              onComplete={() => setObjectiveDone(true)}
-            />
-          </p>
+          <div className="relative max-w-3xl mx-auto">
+            {/* Invisible reservoir to reserve height and prevent layout shifting */}
+            <p className="font-body font-bold text-xl md:text-2xl italic text-transparent pointer-events-none select-none leading-[2]" aria-hidden>
+              {CAREER_OBJECTIVE}
+            </p>
+            {/* Absolutely positioned typewriter layer */}
+            <div className="absolute inset-0">
+              <p className="font-body font-bold text-xl md:text-2xl italic text-text-primary leading-[2]">
+                <TerminalText
+                  text={CAREER_OBJECTIVE}
+                  speed={12}
+                  onComplete={() => setObjectiveDone(true)}
+                />
+              </p>
+            </div>
+          </div>
           {objectiveDone && (
             <motion.div
               initial={{ scaleX: 0 }}

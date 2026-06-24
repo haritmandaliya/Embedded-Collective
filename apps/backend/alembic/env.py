@@ -32,13 +32,47 @@ def do_run_migrations(connection) -> None:
 
 async def run_migrations_online() -> None:
     from app.core.config import settings
-    configuration = config.get_section(config.config_ini_section) or {}
-    configuration["sqlalchemy.url"] = settings.DATABASE_URL
+    from sqlalchemy.ext.asyncio import create_async_engine
+    import ssl
+    from uuid import uuid4
 
-    connectable = async_engine_from_config(
-        configuration,
-        prefix="sqlalchemy.",
+    database_url = settings.DATABASE_URL
+    is_pooler = database_url and (":6543" in database_url or "pgbouncer" in database_url)
+    connect_args = {}
+
+    if database_url:
+        if "?" in database_url:
+            base_url, query_str = database_url.split("?", 1)
+            params = [p for p in query_str.split("&") if not p.startswith("pgbouncer=") and not p.startswith("prepared_statement_cache_size=")]
+        else:
+            base_url = database_url
+            params = []
+            
+        if is_pooler:
+            params.append("prepared_statement_cache_size=0")
+            
+        if params:
+            database_url = f"{base_url}?{'&'.join(params)}"
+        else:
+            database_url = base_url
+
+    # Configure custom SSL context to bypass self-signed certificate verification issues
+    if database_url and ("supabase.co" in database_url or "supabase.com" in database_url or settings.ENVIRONMENT == "production"):
+        ssl_context = ssl.create_default_context()
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = ssl.CERT_NONE
+        connect_args["ssl"] = ssl_context
+
+    if is_pooler:
+        # Disable statement caching in asyncpg for transaction pooler compatibility
+        connect_args["statement_cache_size"] = 0
+        connect_args["prepared_statement_cache_size"] = 0
+        connect_args["prepared_statement_name_func"] = lambda: f"__asyncpg_{uuid4().hex}__"
+
+    connectable = create_async_engine(
+        database_url,
         poolclass=pool.NullPool,
+        connect_args=connect_args,
     )
 
     async with connectable.connect() as connection:

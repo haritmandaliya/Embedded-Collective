@@ -46,19 +46,40 @@ class Settings(BaseSettings):
     # Admin contact email
     ADMIN_EMAIL: Optional[str] = None
 
+    # Supabase Storage Details
+    SUPABASE_URL: Optional[str] = None
+    SUPABASE_SERVICE_ROLE_KEY: Optional[str] = None
+    SUPABASE_BUCKET: Optional[str] = "embedded-collective-uploads"
+
     @model_validator(mode="after")
-    def validate_production_env(self) -> "Settings":
+    def validate_env_settings(self) -> "Settings":
+        if not self.DATABASE_URL:
+            raise ValueError("DATABASE_URL environment variable is required and must be configured.")
+            
+        # Automatically rewrite standard postgresql:// to postgresql+asyncpg:// for async compatibility
+        if self.DATABASE_URL.startswith("postgresql://"):
+            self.DATABASE_URL = self.DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://", 1)
+            
+        if not self.DATABASE_URL.startswith("postgresql+asyncpg://"):
+            raise ValueError("DATABASE_URL must be a PostgreSQL connection URL (e.g. postgresql+asyncpg://...).")
+            
         if self.ENVIRONMENT == "production":
-            if not self.DATABASE_URL:
-                raise ValueError("DATABASE_URL environment variable is required in production environment.")
             if not self.REDIS_URL:
                 raise ValueError("REDIS_URL environment variable is required in production environment.")
             if not self.SECRET_KEY or self.SECRET_KEY == "supersecretkeychangeinproduction1234567890":
                 raise ValueError("SECRET_KEY must be a secure random value in production.")
+            if not self.SUPABASE_URL:
+                raise ValueError("SUPABASE_URL is required in production environment.")
+            if not self.SUPABASE_SERVICE_ROLE_KEY:
+                raise ValueError("SUPABASE_SERVICE_ROLE_KEY is required in production environment.")
+            if not self.SMTP_HOST or not self.SMTP_USER or not self.SMTP_PASSWORD:
+                raise ValueError("SMTP_HOST, SMTP_USER, and SMTP_PASSWORD are required in production environment.")
+            if not self.GOOGLE_CLIENT_ID:
+                raise ValueError("GOOGLE_CLIENT_ID is required in production environment.")
+            if not self.ADMIN_EMAIL:
+                raise ValueError("ADMIN_EMAIL is required in production environment.")
         else:
             # Safe defaults for local development
-            if not self.DATABASE_URL:
-                self.DATABASE_URL = "sqlite+aiosqlite:///collective.db"
             if not self.REDIS_URL:
                 self.REDIS_URL = "redis://localhost:6379/0"
         return self

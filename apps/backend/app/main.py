@@ -2,7 +2,7 @@ import asyncio
 import logging
 import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -22,9 +22,6 @@ from app.api.api import api_router
 from app.db.session import get_db
 from app.models.all_models import User, Question, Answer, FeaturedSolution, Review, Tag, question_tag, QuestionView
 from app.db.seed import seed as run_db_seed
-
-UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "uploads")
-os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 async def run_startup_diagnostics():
     port = os.getenv("PORT", "8000")
@@ -95,8 +92,20 @@ app.add_middleware(
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
-from fastapi.staticfiles import StaticFiles
-app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
+from fastapi.responses import RedirectResponse
+from app.services.storage_service import storage_service
+
+@app.get("/uploads/avatars/{path:path}")
+async def get_avatar_redirect(path: str):
+    return RedirectResponse(url=storage_service.get_public_url(f"avatars/{path}"))
+
+@app.get("/uploads/resumes/{path:path}")
+async def get_resume_redirect(path: str):
+    return RedirectResponse(url=storage_service.get_public_url(f"resumes/{path}"))
+
+@app.get("/uploads/{path:path}")
+async def get_general_redirect(path: str):
+    return RedirectResponse(url=storage_service.get_public_url(f"posts/{path}"))
 
 @app.get("/api/stats/public")
 @app.get(f"{settings.API_V1_STR}/stats/public")
@@ -285,9 +294,10 @@ async def delete_own_account(
 
 # ──── Share Link Generator ────
 @app.get(f"{settings.API_V1_STR}/questions/{{slug}}/share")
-async def get_question_share_data(slug: str, db: AsyncSession = Depends(get_db)):
+async def get_question_share_data(slug: str, request: Request, db: AsyncSession = Depends(get_db)):
     """Generate sharable link and OG metadata for a question."""
     from fastapi import HTTPException as HTTPErr
+    from urllib.parse import urlparse
 
     result = await db.execute(
         select(Question)
@@ -298,7 +308,12 @@ async def get_question_share_data(slug: str, db: AsyncSession = Depends(get_db))
     if not q:
         raise HTTPErr(status_code=404, detail="Question not found")
 
-    base_url = os.environ.get("PUBLIC_URL", "http://localhost:5173")
+    referer = request.headers.get("referer")
+    if referer:
+        parsed = urlparse(referer)
+        base_url = f"{parsed.scheme}://{parsed.netloc}"
+    else:
+        base_url = os.environ.get("PUBLIC_URL", "http://localhost:5173")
     share_url = f"{base_url}/community/q/{q.slug}"
     tags_str = ", ".join([f"#{t.name}" for t in q.tags[:4]]) if q.tags else "#embedded"
     author_name = q.author.display_name or q.author.username if q.author else "Anonymous"

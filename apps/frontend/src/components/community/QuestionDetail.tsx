@@ -708,7 +708,14 @@ export function QuestionDetail() {
                         const res = await fetch(`/api/v1/questions/${question.slug}/share`)
                         if (res.ok) {
                           const data = await res.json()
-                          setShareData(data)
+                          const localOrigin = window.location.origin
+                          const sanitizedData = {
+                            ...data,
+                            url: data.url.replace(/https?:\/\/localhost:\d+/g, localOrigin),
+                            linkedin_url: data.linkedin_url.replace(/https?:\/\/localhost:\d+/g, localOrigin),
+                            twitter_url: data.twitter_url.replace(/https?:\/\/localhost:\d+/g, localOrigin)
+                          }
+                          setShareData(sanitizedData)
                           setShowSharePanel(true)
                         }
                       } catch (e) {

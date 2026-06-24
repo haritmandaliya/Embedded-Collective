@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   Calendar,
   Download,
@@ -10,6 +10,8 @@ import {
   Target,
   CheckCircle2,
   HelpCircle,
+  Github,
+  Linkedin,
 } from 'lucide-react'
 import { useCommunity, isContributorRole } from '../../context/CommunityContext'
 import { Avatar } from './Avatar'
@@ -32,6 +34,8 @@ interface PublicProfile {
   education?: string
   higher_edu?: string
   resume_url?: string
+  github_url?: string
+  linkedin_url?: string
 }
 
 interface Question {
@@ -247,6 +251,7 @@ export function UserProfile() {
   const [loadingSolutions, setLoadingSolutions] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<ProfileTab>('problems')
+  const [showFullAvatar, setShowFullAvatar] = useState(false)
 
   const isContributor = profile ? isContributorRole(profile.role) : false
   const isOwnProfile = user?.username === profile?.username
@@ -431,9 +436,17 @@ export function UserProfile() {
         <div className="glass-card p-6 md:p-8 rounded-lg border border-[--glass-border] mb-6">
           <div className="flex flex-col sm:flex-row sm:items-start gap-6">
             {/* Avatar */}
-            <div className="shrink-0 mx-auto sm:mx-0">
+            <div
+              className={`shrink-0 mx-auto sm:mx-0 ${profile.profile_pic_url ? 'cursor-zoom-in group transition-transform duration-300 hover:scale-105' : ''}`}
+              onClick={() => {
+                if (profile.profile_pic_url) {
+                  setShowFullAvatar(true)
+                }
+              }}
+              title={profile.profile_pic_url ? "Click to view full size" : undefined}
+            >
               {isContributor ? (
-                <div className="rounded-full p-1 ring-2 ring-[--red-core]/70 ring-offset-2 ring-offset-[--bg-void]">
+                <div className={`rounded-full p-1 ring-2 ring-[--red-core]/70 ring-offset-2 ring-offset-[--bg-void] ${profile.profile_pic_url ? 'group-hover:ring-[--red-core]' : ''}`}>
                   <Avatar user={profile} size={96} className="ring-0" />
                 </div>
               ) : (
@@ -468,6 +481,33 @@ export function UserProfile() {
                   Joined {joinedDate}
                 </span>
               </div>
+
+              {(profile.github_url || profile.linkedin_url) && (
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-4">
+                  {profile.github_url && (
+                    <a
+                      href={profile.github_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/5 border border-[--glass-border] hover:border-red-core/50 hover:bg-red-core/10 text-xs font-mono text-text-secondary hover:text-white transition-all duration-300"
+                    >
+                      <Github size={12} />
+                      GitHub
+                    </a>
+                  )}
+                  {profile.linkedin_url && (
+                    <a
+                      href={profile.linkedin_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/5 border border-[--glass-border] hover:border-[--cyan-spark]/50 hover:bg-[--cyan-spark]/10 text-xs font-mono text-text-secondary hover:text-white transition-all duration-300"
+                    >
+                      <Linkedin size={12} />
+                      LinkedIn
+                    </a>
+                  )}
+                </div>
+              )}
 
               {/* Contributor-only fields */}
               {isContributor && (
@@ -588,6 +628,42 @@ export function UserProfile() {
           )
         )}
       </div>
+
+      {/* Lightbox / Full Avatar Modal */}
+      <AnimatePresence>
+        {showFullAvatar && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm cursor-zoom-out"
+            onClick={() => setShowFullAvatar(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+              className="relative max-w-[90vw] max-h-[85vh] rounded-lg overflow-hidden shadow-2xl border border-white/10"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <img
+                src={profile.profile_pic_url}
+                alt={profile.display_name}
+                className="max-w-full max-h-[75vh] object-contain rounded"
+              />
+              <div className="bg-[#0D0D12] p-4 text-center border-t border-white/5">
+                <p className="font-heading font-bold text-sm text-white">{profile.display_name}</p>
+                <p className="font-mono text-[10px] text-text-secondary mt-0.5">@{profile.username}</p>
+              </div>
+              
+              <button
+                onClick={() => setShowFullAvatar(false)}
+                className="absolute top-4 right-4 text-white/70 hover:text-white bg-black/50 hover:bg-black/80 rounded-full p-2 transition-all font-mono text-xs w-8 h-8 flex items-center justify-center border border-white/10"
+              >
+                ✕
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

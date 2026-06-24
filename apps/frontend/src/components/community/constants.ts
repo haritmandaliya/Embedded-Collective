@@ -28,9 +28,20 @@ export function statusChip(status?: string, isSolved?: boolean) {
   return { label: 'OPEN', className: 'bg-amber-500/10 text-amber-400 border-amber-500/30' }
 }
 
+export function parseUTCDate(dateString: string): Date {
+  if (!dateString) return new Date()
+  let formatted = dateString
+  if (!formatted.endsWith('Z') && !formatted.includes('+') && !/-\d{2}:\d{2}$/.test(formatted)) {
+    formatted = formatted + 'Z'
+  }
+  return new Date(formatted)
+}
+
 export function timeAgo(iso: string) {
-  const diff = Date.now() - new Date(iso).getTime()
-  const mins = Math.floor(diff / 60000)
+  const dateObj = parseUTCDate(iso)
+  const diff = Date.now() - dateObj.getTime()
+  const mins = Math.max(0, Math.floor(diff / 60000))
+  if (mins < 1) return 'just now'
   if (mins < 60) return `${mins}m ago`
   const hrs = Math.floor(mins / 60)
   if (hrs < 24) return `${hrs}h ago`

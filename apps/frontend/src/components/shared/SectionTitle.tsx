@@ -21,7 +21,7 @@ export function SectionTitle({ label, title, className = '' }: SectionTitleProps
         initial={{ opacity: 0, x: 60, skewX: -8 }}
         animate={isVisible ? { opacity: 1, x: 0, skewX: 0 } : {}}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="font-heading font-bold text-3xl md:text-4xl uppercase tracking-[0.06em] text-text-primary"
+        className={`font-heading font-bold text-3xl md:text-4xl uppercase tracking-[0.06em] ${className.includes('text-white') ? 'text-white' : 'text-text-primary'}`}
       >
         {title}
       </motion.h2>

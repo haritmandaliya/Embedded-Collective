@@ -142,7 +142,7 @@ export function Projects() {
       </Suspense>
 
       <div ref={ref} className="relative z-10 max-w-content mx-auto">
-        <SectionTitle label="portfolio" title="PROJECTS.build" />
+        <SectionTitle label="portfolio" title="PROJECTS.build" className="text-white" />
 
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

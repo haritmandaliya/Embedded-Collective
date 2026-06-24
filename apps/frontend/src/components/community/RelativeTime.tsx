@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { timeAgo } from './constants'
+import { timeAgo, parseUTCDate } from './constants'
 
 export function RelativeTime({ iso }: { iso: string }) {
   const [text, setText] = useState(() => timeAgo(iso))
@@ -12,5 +12,20 @@ export function RelativeTime({ iso }: { iso: string }) {
     return () => clearInterval(interval)
   }, [iso])
 
-  return <>{text}</>
+  const dateObj = parseUTCDate(iso)
+  const formattedIST = dateObj.toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    day: 'numeric',
+    month: 'short',
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  });
+
+  return (
+    <span title={`UTC: ${dateObj.toUTCString()}`} className="inline-flex items-center gap-1 flex-wrap">
+      <span>{text}</span>
+      <span className="opacity-50 text-[10px] font-normal">({formattedIST} IST)</span>
+    </span>
+  )
 }

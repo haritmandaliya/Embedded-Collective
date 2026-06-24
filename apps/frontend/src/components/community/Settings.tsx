@@ -8,7 +8,7 @@ import { useToast } from '../../context/ToastContext'
 
 export function Settings() {
   const navigate = useNavigate()
-  const { user, token, refreshUser } = useCommunity()
+  const { user, token, refreshUser, logout } = useCommunity()
   const { setThemeMode } = useTheme()
   const { toast } = useToast()
 
@@ -97,6 +97,16 @@ export function Settings() {
     if (!token) return
     setSaving(true)
 
+    let cleanGithub = githubUrl.trim()
+    if (cleanGithub && !/^https?:\/\//i.test(cleanGithub)) {
+      cleanGithub = `https://${cleanGithub}`
+    }
+
+    let cleanLinkedin = linkedinUrl.trim()
+    if (cleanLinkedin && !/^https?:\/\//i.test(cleanLinkedin)) {
+      cleanLinkedin = `https://${cleanLinkedin}`
+    }
+
     try {
       const res = await fetch('/api/v1/users/me', {
         method: 'PATCH',
@@ -107,8 +117,8 @@ export function Settings() {
         body: JSON.stringify({
           display_name: displayName,
           bio: bio,
-          github_url: githubUrl,
-          linkedin_url: linkedinUrl,
+          github_url: cleanGithub,
+          linkedin_url: cleanLinkedin,
           avatar_url: avatarUrl,
           profile_pic_url: avatarUrl,
           education: education || undefined,
@@ -117,7 +127,16 @@ export function Settings() {
         }),
       })
 
+      if (res.status === 401) {
+        toast.error('Session expired. Please sign in again.')
+        logout()
+        navigate('/community')
+        return
+      }
+
       if (res.ok) {
+        setGithubUrl(cleanGithub)
+        setLinkedinUrl(cleanLinkedin)
         toast.success('Profile details updated successfully.')
         refreshUser()
       } else {
@@ -375,7 +394,7 @@ export function Settings() {
                   <div>
                     <label className="block font-mono text-[10px] uppercase text-text-secondary mb-2">GitHub Profile URL</label>
                     <input
-                      type="url"
+                      type="text"
                       value={githubUrl}
                       onChange={(e) => setGithubUrl(e.target.value)}
                       placeholder="https://github.com/username"
@@ -386,7 +405,7 @@ export function Settings() {
                   <div>
                     <label className="block font-mono text-[10px] uppercase text-text-secondary mb-2">LinkedIn Profile URL</label>
                     <input
-                      type="url"
+                      type="text"
                       value={linkedinUrl}
                       onChange={(e) => setLinkedinUrl(e.target.value)}
                       placeholder="https://linkedin.com/in/username"

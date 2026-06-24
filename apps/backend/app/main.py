@@ -23,9 +23,6 @@ from app.db.session import get_db
 from app.models.all_models import User, Question, Answer, FeaturedSolution, Review, Tag, question_tag, QuestionView
 from app.db.seed import seed as run_db_seed
 
-UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "uploads")
-os.makedirs(UPLOAD_DIR, exist_ok=True)
-
 async def run_startup_diagnostics():
     port = os.getenv("PORT", "8000")
     env = settings.ENVIRONMENT
@@ -95,8 +92,20 @@ app.add_middleware(
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
-from fastapi.staticfiles import StaticFiles
-app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
+from fastapi.responses import RedirectResponse
+from app.services.storage_service import storage_service
+
+@app.get("/uploads/avatars/{path:path}")
+async def get_avatar_redirect(path: str):
+    return RedirectResponse(url=storage_service.get_public_url(f"avatars/{path}"))
+
+@app.get("/uploads/resumes/{path:path}")
+async def get_resume_redirect(path: str):
+    return RedirectResponse(url=storage_service.get_public_url(f"resumes/{path}"))
+
+@app.get("/uploads/{path:path}")
+async def get_general_redirect(path: str):
+    return RedirectResponse(url=storage_service.get_public_url(f"posts/{path}"))
 
 @app.get("/api/stats/public")
 @app.get(f"{settings.API_V1_STR}/stats/public")

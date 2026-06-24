@@ -1,7 +1,7 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://embedded-collective-backend.onrender.com/api/$1" },
-    { "source": "/uploads/(.*)", "destination": "https://embedded-collective-backend.onrender.com/uploads/$1" },
+    { "source": "/api/(.*)", "destination": "https://embedded-collective.onrender.com/api/$1" },
+    { "source": "/uploads/(.*)", "destination": "https://embedded-collective.onrender.com/uploads/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
